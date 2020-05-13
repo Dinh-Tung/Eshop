@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 
-namespace EShopSolution.Application.Dtos
+namespace EShopSolution.ViewModels.Common
 {
     public class PagedResult<T>
     {
