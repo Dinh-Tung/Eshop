@@ -1,7 +1,7 @@
-﻿using EShopSolution.Application.Catalog.Products.Dtos;
-using EShopSolution.Application.Catalog.Products.Dtos.Public;
-using EShopSolution.Application.Dtos;
-using EShopSolution.Data.EF;
+﻿using EShopSolution.Data.EF;
+using EShopSolution.ViewModels.Catalog.Product;
+using EShopSolution.ViewModels.Catalog.Product.Public;
+using EShopSolution.ViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
