@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EShopSolution.ViewModels.Catalog.Product.Manage
+namespace EShopSolution.ViewModels.Catalog.Product
 {
-    public class GetProductPagingRequest : PagingRequestBase
+    public class GetManageProductPagingRequest : PagingRequestBase
     {
         public string keyword { get; set; }
 
