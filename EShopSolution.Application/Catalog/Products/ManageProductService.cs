@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using EShopSolution.Application.Common;
+using Microsoft.AspNetCore.Hosting;
 
 namespace EShopSolution.Application.Catalog.Products
 {
@@ -19,15 +20,41 @@ namespace EShopSolution.Application.Catalog.Products
     {
         private readonly EShopDbContext _context;
         private readonly IStorageService _storageService;
-        public ManageProductService(EShopDbContext context, IStorageService storageService)
+        //[Obsolete]
+        //private IHostingEnvironment _env;
+
+        //private string _dir;
+
+        [Obsolete]
+        public ManageProductService(EShopDbContext context, IStorageService storageService) //IHostingEnvironment env)
         {
             _context = context;
             _storageService = storageService;
+            //_env = env;
+            //_dir = _env.ContentRootPath;
         }
 
         public Task<int> AddImages(int productId, List<IFormFile> files)
         {
+            /*var product = await _context.Products.FindAsync(productId);
+            if (product == null) throw new EShopException($"Cannot find product with id : {productId}");
+
+            if (files != null)
+            {
+                int i = 0;
+                foreach (var file in files)
+                {
+                    using (var fileStream = new FileStream(Path.Combine(_dir,$"file{i++}.png"), FileMode.Create,FileAccess.Write))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                }
+            }
+            return await _context.SaveChangesAsync();
+            */
             throw new NotImplementedException();
+
+
         }
 
         public async Task AddViewcount(int productId)
@@ -77,7 +104,9 @@ namespace EShopSolution.Application.Catalog.Products
                 };
             }
             _context.Products.Add(product);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return product.Id;
 
         }
 
@@ -145,12 +174,38 @@ namespace EShopSolution.Application.Catalog.Products
             return pageResult;
         }
 
+        public async Task<ProductViewModel> GetById(int productId, string LanguageId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            var productTranlation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId && x.LanguageId == LanguageId);
+
+            var productViewModel = new ProductViewModel()
+            {
+                Id = product.Id,
+                Description = productTranlation != null ? productTranlation.Description : null,
+                Details = productTranlation != null ? productTranlation.Details : null,
+                SeoDescription = productTranlation != null ? productTranlation.SeoDescription : null,
+                LanguageId = productTranlation.LanguageId,
+                Name = productTranlation != null ? productTranlation.Name : null,
+                OriginalPrice = product.OriginalPrice,
+                Price = product.Price,
+                SeoAlias = productTranlation != null ? productTranlation.SeoAlias : null,
+                SeoTitle = productTranlation != null ? productTranlation.SeoTitle : null,
+                Stock = product.Stock,
+                ViewCount=product.ViewCount,
+                DateCreated = product.DateCreated,
+            };
+
+            return productViewModel;
+            
+        }
+
         public Task<List<ProductImageViewModel>> GetListImage(int productId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Price(int productId, decimal newPrice)
+        public async Task<bool> UpdatePrice(int productId, decimal newPrice)
         {
             var product = await _context.Products.FindAsync(productId);
             
